@@ -8,6 +8,8 @@ d3.json(queryUrl, function(data) {
   createFeatures(data.features);
 });
 
+
+
 function createFeatures(earthquakeData) {
 
   // Define a function we want to run once for each feature in the features array
@@ -18,14 +20,13 @@ function onEachFeature(feature, layer) {
 }
 
 
-
   // Create a GeoJSON layer containing the features array on the earthquakeData object
   // Run the onEachFeature function once for each piece of data in the array
   var earthquakes = L.geoJSON(earthquakeData, {
     pointToLayer: function (feature, latlng) {
       
-
-      function getColor(d) {
+      // Change circle marker color based on magnitude
+     function getColor(d) {
         mag = d.properties.mag;
         
         return mag > 5  ? 'rgb(245, 59, 2)' :
@@ -36,7 +37,7 @@ function onEachFeature(feature, layer) {
                           'rgb(147, 253, 60)';
     }
     
-    
+      // Change circle marker size based on magnitude
       function getSize(d) {
         mag = d.properties.mag;
       
@@ -48,10 +49,7 @@ function onEachFeature(feature, layer) {
                         '8';
   }
 
-
-
-
-    
+      // Settings for the circle markers
       var geojsonMarkerOptions = {
         radius: getSize(feature),
         fillColor: getColor(feature),
@@ -72,6 +70,8 @@ function onEachFeature(feature, layer) {
   // Sending our earthquakes layer to the createMap function
   createMap(earthquakes);
 }
+
+
 
 function createMap(earthquakes) {
 
@@ -103,35 +103,37 @@ function createMap(earthquakes) {
   });
 
 
-  // Set up the legend
- // var legend = L.control({ position: "bottomright" });
-
- // legend.onAdd = function() {
- //   var div = L.DomUtil.create("div", "info legend");
+  // Function for colors to set up the legend
+  function getColor(d) {
     
- //   var limits = geojson.options.limits;
-  //  var colors = geojson.options.colors;
-  //  var labels = [];
+    return d > 5  ? 'rgb(245, 59, 2)' :
+           d > 4  ? 'rgb(252, 144, 42)' :
+           d > 3   ? 'rgb(253, 176, 60)' :
+           d > 2   ? 'rgb(253, 224, 60)' :
+           d > 1   ? 'rgb(201, 253, 60)' :
+                      'rgb(147, 253, 60)';
+  }
 
-    // Add min & max
-  //  var legendInfo = "<h1>Median Income</h1>" +
-  //    "<div class=\"labels\">" +
-  //      "<div class=\"min\">" + limits[0] + "</div>" +
-    //    "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-      //"</div>";
 
-   // div.innerHTML = legendInfo;
+  // Set up the legend
+  var legend = L.control({ position: 'bottomright' });
 
-   // limits.forEach(function(limit, index) {
-   //   labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-   // });
+  legend.onAdd = function(myMap) {
+    var div = L.DomUtil.create('div', 'info legend'),   
+        colors = [0, 1, 2, 3, 4, 5],
+        labels = [];
 
-   // div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-   // return div;
- // };
+    for (var i = 0; i < colors.length; i++) {
+      div.innerHTML +=
+      '<i style="background:' + getColor(colors[i] + 1) + '"></i> ' +
+      colors[i] + (colors[i + 1] ? '&ndash;' + colors[i + 1] + '<br' : '+');
+    }
+
+    return div;
+  };
 
   // Adding legend to the map
-  //legend.addTo(myMap);
+  legend.addTo(myMap);
 
 }
 
