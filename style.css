@@ -11,6 +11,7 @@ html {
 }
 
 /* settings for legend on the map */
+/* referenced from https://www.igismap.com/legend-in-leafletjs-map-with-topojson/ */
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;

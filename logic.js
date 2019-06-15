@@ -115,6 +115,7 @@ function createMap(earthquakes) {
 
 
   // Set up the legend
+  // Referenced from https://www.igismap.com/legend-in-leafletjs-map-with-topojson/
   var legend = L.control({ position: 'bottomright' });
 
   legend.onAdd = function(myMap) {
